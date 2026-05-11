@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KaraX.ai | OneChat vs Personal Assistant Agent</title>
+  <style>
+    :root {
+      --black: #050505;
+      --near-black: #111318;
+      --text: #1d1d1f;
+      --muted: #6e6e73;
+      --soft: #f5f5f7;
+      --white: #ffffff;
+      --line: rgba(0,0,0,0.10);
+      --blue: #3aa6d0;
+      --blue-dark: #207ea9;
+      --cyan-soft: #e5f2f9;
+      --shadow: 0 24px 80px rgba(0,0,0,0.10);
+      --radius: 22px;
+      --max: 1180px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--white);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: saturate(180%) blur(20px);
+      background: rgba(255,255,255,0.74);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .nav-inner {
+      width: min(var(--max), calc(100% - 40px));
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 750;
+      letter-spacing: -0.04em;
+    }
+
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, #0c2b64 0%, #0d8bc7 48%, #7fe8ff 100%);
+      clip-path: polygon(0 50%, 70% 0, 45% 50%, 100% 100%, 34% 72%);
+      box-shadow: 0 8px 22px rgba(58,166,208,0.35);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 22px;
+      font-size: 13px;
+      color: rgba(0,0,0,0.68);
+    }
+
+    .nav-links a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .nav-cta {
+      padding: 10px 16px;
+      background: var(--text);
+      color: white;
+      border-radius: 999px;
+      font-size: 13px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    section {
+      padding: 96px 20px;
+    }
+
+    .container {
+      width: min(var(--max), 100%);
+      margin: 0 auto;
+    }
+
+    .hero {
+      min-height: 92vh;
+      display: grid;
+      align-items: center;
+      background: var(--black);
+      color: white;
+      padding-top: 80px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: auto -10% -40% -10%;
+      height: 420px;
+      background: radial-gradient(circle, rgba(58,166,208,0.18), transparent 64%);
+      pointer-events: none;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: 64px;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #9de6ff;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 700;
+      margin-bottom: 28px;
+    }
+
+    h1 {
+      font-size: clamp(54px, 7vw, 96px);
+      line-height: 0.98;
+      letter-spacing: -0.07em;
+      margin: 0 0 28px;
+      font-weight: 900;
+    }
+
+    h1 span {
+      color: rgba(255,255,255,0.55);
+    }
+
+    .hero p {
+      font-size: clamp(18px, 2vw, 23px);
+      line-height: 1.55;
+      color: rgba(255,255,255,0.72);
+      max-width: 720px;
+      margin: 0 0 34px;
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 48px;
+      padding: 0 22px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 15px;
+      transition: 180ms ease;
+    }
+
+    .btn.primary {
+      background: var(--blue);
+      color: white;
+      box-shadow: 0 16px 44px rgba(58,166,208,0.34);
+    }
+
+    .btn.primary:hover {
+      background: var(--blue-dark);
+      transform: translateY(-1px);
+    }
+
+    .btn.secondary {
+      color: white;
+      border: 1px solid rgba(255,255,255,0.22);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .mock-phone {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 36px;
+      padding: 18px;
+      box-shadow: 0 40px 120px rgba(0,0,0,0.45);
+      backdrop-filter: blur(14px);
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-14px); }
+    }
+
+    .phone-inner {
+      background: #fbfbfd;
+      color: var(--text);
+      border-radius: 26px;
+      overflow: hidden;
+      min-height: 560px;
+    }
+
+    .phone-top {
+      padding: 18px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .chat-body {
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .bubble {
+      padding: 12px 14px;
+      border-radius: 16px;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .bubble.user {
+      background: var(--text);
+      color: white;
+      margin-left: 26px;
+    }
+
+    .bubble.ai {
+      background: var(--soft);
+      color: var(--text);
+      margin-right: 28px;
+    }
+
+    .task-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    .task-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      font-size: 12px;
+    }
+
+    .task-row:last-child {
+      border-bottom: 0;
+    }
+
+    .status {
+      font-size: 10px;
+      padding: 4px 7px;
+      border-radius: 999px;
+      background: var(--cyan-soft);
+      color: var(--blue-dark);
+      font-weight: 700;
+    }
+
+    .section-head {
+      max-width: 860px;
+      margin: 0 auto 54px;
+      text-align: center;
+    }
+
+    .label {
+      color: var(--blue-dark);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+
+    h2 {
+      font-size: clamp(38px, 5vw, 68px);
+      line-height: 1.03;
+      letter-spacing: -0.06em;
+      margin: 0 0 18px;
+      font-weight: 900;
+    }
+
+    .section-head p {
+      font-size: 18px;
+      line-height: 1.65;
+      color: var(--muted);
+      margin: 0 auto;
+      max-width: 760px;
+    }
+
+    .comparison {
+      background: var(--soft);
+    }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .compare-card {
+      background: white;
+      border-radius: var(--radius);
+      border: 1px solid rgba(0,0,0,0.08);
+      padding: 28px;
+      min-height: 520px;
+      box-shadow: 0 16px 50px rgba(0,0,0,0.04);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .compare-card.featured {
+      background: var(--near-black);
+      color: white;
+      transform: translateY(-12px);
+      box-shadow: 0 30px 90px rgba(0,0,0,0.24);
+    }
+
+    .compare-card h3 {
+      font-size: 26px;
+      letter-spacing: -0.04em;
+      margin: 0 0 8px;
+    }
+
+    .compare-card .sub {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    .compare-card.featured .sub {
+      color: rgba(255,255,255,0.62);
+    }
+
+    .feature-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .feature-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      font-size: 14px;
+      line-height: 1.5;
+      color: rgba(0,0,0,0.76);
+    }
+
+    .featured .feature-item {
+      color: rgba(255,255,255,0.76);
+    }
+
+    .dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      flex: 0 0 auto;
+      background: var(--cyan-soft);
+      color: var(--blue-dark);
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .featured .dot {
+      background: rgba(58,166,208,0.18);
+      color: #9de6ff;
+    }
+
+    .mini-ui {
+      margin-top: 28px;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.08);
+      background: #fafafa;
+    }
+
+    .featured .mini-ui {
+      border-color: rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .mini-head {
+      height: 42px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 14px;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .featured .mini-head {
+      border-color: rgba(255,255,255,0.10);
+    }
+
+    .mini-body {
+      padding: 14px;
+      display: grid;
+      gap: 9px;
+    }
+
+    .line {
+      height: 9px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.09);
+    }
+
+    .featured .line {
+      background: rgba(255,255,255,0.13);
+    }
+
+    .line.short {
+      width: 58%;
+    }
+
+    .line.mid {
+      width: 78%;
+    }
+
+    .agent-flow {
+      background: var(--black);
+      color: white;
+    }
+
+    .flow-grid {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .flow-copy p {
+      font-size: 18px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.70);
+    }
+
+    .flow-stage {
+      display: grid;
+      gap: 14px;
+    }
+
+    .stage {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 20px;
+      display: grid;
+      gap: 10px;
+      transform: translateY(20px);
+      opacity: 0;
+      animation: reveal 0.7s ease forwards;
+    }
+
+    .stage:nth-child(2) { animation-delay: 0.15s; }
+    .stage:nth-child(3) { animation-delay: 0.30s; }
+    .stage:nth-child(4) { animation-delay: 0.45s; }
+
+    @keyframes reveal {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .stage strong {
+      font-size: 18px;
+      letter-spacing: -0.02em;
+    }
+
+    .stage span {
+      color: rgba(255,255,255,0.62);
+      line-height: 1.55;
+      font-size: 14px;
+    }
+
+    .marketing {
+      background: white;
+    }
+
+    .marketing-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+
+    .marketing-card {
+      border-radius: var(--radius);
+      background: var(--soft);
+      padding: 28px;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .marketing-card h3 {
+      font-size: 28px;
+      margin: 0 0 12px;
+      letter-spacing: -0.04em;
+    }
+
+    .marketing-card p,
+    .marketing-card li {
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 15px;
+    }
+
+    .marketing-card ul {
+      margin: 14px 0 0;
+      padding-left: 20px;
+    }
+
+    .priority {
+      background: var(--soft);
+    }
+
+    .priority-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .priority-card {
+      background: white;
+      border-radius: 20px;
+      padding: 22px;
+      border: 1px solid rgba(0,0,0,0.07);
+    }
+
+    .priority-card .num {
+      font-size: 42px;
+      letter-spacing: -0.06em;
+      font-weight: 900;
+      margin-bottom: 12px;
+      color: var(--blue-dark);
+    }
+
+    .priority-card h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      letter-spacing: -0.03em;
+    }
+
+    .priority-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .message {
+      background: var(--near-black);
+      color: white;
+    }
+
+    .message-box {
+      background: white;
+      color: var(--text);
+      border-radius: 28px;
+      padding: 38px;
+      box-shadow: var(--shadow);
+    }
+
+    .message-grid {
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 34px;
+    }
+
+    .quote {
+      font-size: clamp(28px, 4vw, 54px);
+      line-height: 1.05;
+      letter-spacing: -0.06em;
+      font-weight: 900;
+    }
+
+    .message-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .message-list div {
+      padding: 16px 18px;
+      border-radius: 16px;
+      background: var(--soft);
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    .cta-final {
+      background: var(--black);
+      color: white;
+      text-align: center;
+      padding: 110px 20px;
+    }
+
+    .cta-final h2 {
+      max-width: 920px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-final p {
+      color: rgba(255,255,255,0.68);
+      max-width: 720px;
+      margin: 0 auto 30px;
+      font-size: 18px;
+      line-height: 1.65;
+    }
+
+    footer {
+      padding: 34px 20px;
+      background: #000;
+      color: rgba(255,255,255,0.56);
+      font-size: 13px;
+    }
+
+    .footer-inner {
+      width: min(var(--max), 100%);
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 960px) {
+      .hero-grid,
+      .flow-grid,
+      .message-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .compare-grid,
+      .priority-grid,
+      .marketing-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .compare-card.featured {
+        transform: none;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      section {
+        padding: 72px 18px;
+      }
+
+      .phone-inner {
+        min-height: 500px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="brand">
+        <div class="brand-mark"></div>
+        KaraX.ai
+      </div>
+      <div class="nav-links">
+        <a href="#compare">Comparison</a>
+        <a href="#agent">Agent Logic</a>
+        <a href="#marketing">Marketing</a>
+        <a href="#priority">Priority</a>
+        <a href="#message">Messaging</a>
+      </div>
+      <a class="nav-cta" href="#next">Team Action</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="eyebrow">Internal team brief</div>
+        <h1>
+          OneChat is the workspace.<br />
+          <span>Personal Assistant Agent is the follow-through.</span>
+        </h1>
+        <p>
+          This page explains the difference between OneChat, KaraX Personal Assistant Agent,
+          and normal AI chat tools like ChatGPT or Claude — in a way marketing, sales, product,
+          and leadership can understand quickly.
+        </p>
+        <div class="cta-row">
+          <a class="btn primary" href="#compare">Understand the difference →</a>
+          <a class="btn secondary" href="#marketing">See marketing angle</a>
+        </div>
+      </div>
+
+      <div class="mock-phone">
+        <div class="phone-inner">
+          <div class="phone-top">
+            <span>KaraX Personal Assistant</span>
+            <span style="color: var(--blue-dark);">Online</span>
+          </div>
+
+          <div class="chat-body">
+            <div class="bubble user">
+              Prepare me for tomorrow’s client call, summarize the last meeting,
+              draft a follow-up email, create pending tasks, and check calendar availability.
+            </div>
+
+            <div class="bubble ai">
+              Got it. I’ll split this into 5 workstreams and prepare everything for review.
+            </div>
+
+            <div class="task-card">
+              <div class="task-row">
+                <span>Client call brief</span>
+                <span class="status">In progress</span>
+              </div>
+              <div class="task-row">
+                <span>Meeting summary</span>
+                <span class="status">Done</span>
+              </div>
+              <div class="task-row">
+                <span>Follow-up email</span>
+                <span class="status">Drafting</span>
+              </div>
+              <div class="task-row">
+                <span>Pending task list</span>
+                <span class="status">Ready</span>
+              </div>
+              <div class="task-row">
+                <span>Calendar availability</span>
+                <span class="status">Checking</span>
+              </div>
+            </div>
+
+            <div class="bubble ai">
+              Results are ready for review. Nothing has been sent or shared yet.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="compare" class="comparison">
+    <div class="container">
+      <div class="section-head">
+        <div class="label">Product clarity</div>
+        <h2>Three tools. Three completely different jobs.</h2>
+        <p>
+          The mistake is treating everything as “AI chat.” That weakens our positioning.
+          KaraX has two layers: the workspace layer and the assistant/delegation layer.
+        </p>
+      </div>
+
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h3>OneChat</h3>
+          <div class="sub">Your AI workspace</div>
+
+          <div class="feature-list">
+            <div class="feature-item"><span class="dot">✓</span><span>Best for asking, creating, analyzing, comparing, and generating with your own work context.</span></div>
+            <div class="feature-item"><span class="dot">✓</span><span>Uses meetings, files, documents, prompts, Skills, and models in one workspace.</span></div>
+            <div class="feature-item"><span class="dot">✓</span><span>Turns scattered context into structured output like summaries, reports, plans, and briefs.</span></div>
+            <div class="feature-item"><span class="dot">✓</span><span>User stays actively involved: ask, refine, review, finalize.</span></div>
+          </div>
+
+          <div class="mini-ui">
+            <div class="mini-head">OneChat Workspace</div>
+            <div class="mini-body">
+              <div class="line mid"></div>
+              <div class="line"></div>
+              <div class="line short"></div>
+              <div style="display:flex; gap:8px; margin-top:10px;">
+                <span class="status">Meeting</span>
+                <span class="status">File</span>
+                <span class="status">Skill</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="compare-card featured">
+          <h3>Personal Assistant Agent</h3>
+          <div class="sub">Your AI work assistant</div>
+
+          <div class="feature-list">
+            <div class="feature-item"><span class="dot">✓</span><span>Best for delegating multi-step work, follow-ups, reminders, task coordination, and daily execution support.</span></div>
+            <div class="feature-item"><span class="dot">✓</span><span>Can break one big request into multiple workstreams and process them in parallel.</span></div>
+            <div class="feature-item"><span class="dot">✓</span><span>Can operate through channels like Telegram today, with WhatsApp and Google Chat planned.</span></div>
+            <div class="feature-item"><span class="dot">✓</span><span>Prepares outputs for review. The user approves before anything moves forward.</span></div>
+          </div>
+
+          <div class="mini-ui">
+            <div class="mini-head">Working on 5 tasks</div>
+            <div class="mini-body">
+              <div class="line"></div>
+              <div class="line mid"></div>
+              <div class="line short"></div>
+              <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
+                <span class="status">Brief</span>
+                <span class="status">Summary</span>
+                <span class="status">Email</span>
+                <span class="status">Tasks</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="compare-card">
+          <h3>Other AI Chat</h3>
+          <div class="sub">General-purpose assistant</div>
+
+          <div class="feature-list">
+            <div class="feature-item"><span class="dot">✓</span><span>Best for one-off questions, generic content, brainstorming, explanation, and broad knowledge.</span></div>
+            <div class="feature-item"><span class="dot">✓</span><span>Usually works one prompt at a time unless heavily guided by the user.</span></div>
+            <div class="feature-item"><span class="dot">✓</span><span>User must manually copy context, assemble outputs, and manage follow-through.</span></div>
+            <div class="feature-item"><span class="dot">✓</span><span>Useful, but often disconnected from the user’s actual work systems.</span></div>
+          </div>
+
+          <div class="mini-ui">
+            <div class="mini-head">AI Chat</div>
+            <div class="mini-body">
+              <div class="line"></div>
+              <div class="line mid"></div>
+              <div class="line short"></div>
+              <div style="display:flex; gap:8px; margin-top:10px;">
+                <span class="status">Answer</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="agent" class="agent-flow">
+    <div class="container flow-grid">
+      <div class="flow-copy">
+        <div class="label">Why this is powerful</div>
+        <h2>Normal AI answers. The Personal Assistant Agent coordinates.</h2>
+        <p>
+          The core product shift is simple: users should not have to ask five separate prompts,
+          copy results between apps, and remember what to do next. The assistant should understand
+          the request, split the work, track progress, and return organized outputs.
+        </p>
+        <p>
+          That makes KaraX feel less like another AI tool and more like a daily work companion.
+        </p>
+      </div>
+
+      <div class="flow-stage">
+        <div class="stage">
+          <strong>1. User delegates the outcome</strong>
+          <span>“Prepare me for tomorrow, summarize the meeting, draft the follow-up, create tasks, and check my calendar.”</span>
+        </div>
+        <div class="stage">
+          <strong>2. Assistant breaks it into workstreams</strong>
+          <span>Meeting summary, client brief, follow-up draft, pending tasks, and calendar availability become separate task paths.</span>
+        </div>
+        <div class="stage">
+          <strong>3. Work runs in parallel</strong>
+          <span>The assistant uses connected context from meetings, files, documents, and tools to prepare each output.</span>
+        </div>
+        <div class="stage">
+          <strong>4. User reviews before action</strong>
+          <span>The assistant prepares the work. The user edits, approves, sends, schedules, or continues.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="marketing" class="marketing">
+    <div class="container">
+      <div class="section-head">
+        <div class="label">Marketing strategy</div>
+        <h2>We should not sell this as a feature. We should sell it as a new work behavior.</h2>
+        <p>
+          The user does not wake up wanting “agentic task orchestration.” They want fewer missed follow-ups,
+          less switching, and someone to help them stay on top of messy work.
+        </p>
+      </div>
+
+      <div class="marketing-grid">
+        <div class="marketing-card">
+          <h3>Core positioning</h3>
+          <p>
+            <strong>Personal Assistant Agent is your AI assistant for the work that happens after the conversation.</strong>
+            It helps users organize, follow up, prepare, and move work forward from anywhere.
+          </p>
+          <ul>
+            <li>Inside KaraX for deep work</li>
+            <li>Inside Telegram for quick delegation</li>
+            <li>WhatsApp and Google Chat as future reach channels</li>
+            <li>Review-first so the user stays in control</li>
+          </ul>
+        </div>
+
+        <div class="marketing-card">
+          <h3>Emotional pain</h3>
+          <p>
+            The pain is not “I need AI.” The pain is: “I have too much context, too many conversations,
+            too many small follow-ups, and I am still the person carrying all of it.”
+          </p>
+          <ul>
+            <li>Meetings create loose ends</li>
+            <li>Messages become forgotten tasks</li>
+            <li>AI answers still need manual assembly</li>
+            <li>Work gets stuck between tools</li>
+          </ul>
+        </div>
+
+        <div class="marketing-card">
+          <h3>High-converting message</h3>
+          <p>
+            Use simple language. No technical explanation first. Lead with delegation and relief.
+          </p>
+          <ul>
+            <li>“Message it like a person. Review the work like a manager.”</li>
+            <li>“Give multiple tasks in one message.”</li>
+            <li>“Your assistant breaks them into workstreams.”</li>
+            <li>“You stay in control before anything moves.”</li>
+          </ul>
+        </div>
+
+        <div class="marketing-card">
+          <h3>Who will understand fastest</h3>
+          <p>
+            Start with people who already suffer from coordination overload.
+          </p>
+          <ul>
+            <li>Founders and solopreneurs</li>
+            <li>Consultants and agencies</li>
+            <li>Sales professionals</li>
+            <li>Marketing managers</li>
+            <li>Recruiters and HR operators</li>
+            <li>Remote team leads</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="priority" class="priority">
+    <div class="container">
+      <div class="section-head">
+        <div class="label">Why high priority</div>
+        <h2>This can become the clearest reason to choose KaraX.</h2>
+        <p>
+          OneChat gives KaraX a workspace. Personal Assistant Agent gives KaraX a daily habit.
+          That is the difference between “try once” and “use every day.”
+        </p>
+      </div>
+
+      <div class="priority-grid">
+        <div class="priority-card">
+          <div class="num">01</div>
+          <h3>Stronger differentiation</h3>
+          <p>Most AI tools are still perceived as chat boxes. This positions KaraX as a work assistant that follows through.</p>
+        </div>
+
+        <div class="priority-card">
+          <div class="num">02</div>
+          <h3>Higher daily usage</h3>
+          <p>Messaging access through Telegram, WhatsApp, and Google Chat turns the assistant into a daily behavior.</p>
+        </div>
+
+        <div class="priority-card">
+          <div class="num">03</div>
+          <h3>Better conversion story</h3>
+          <p>“Delegate multiple tasks at once” is easier to understand than a long feature list.</p>
+        </div>
+
+        <div class="priority-card">
+          <div class="num">04</div>
+          <h3>Natural expansion path</h3>
+          <p>Once users trust the assistant, they can adopt meetings, files, Skills, workflows, and integrations faster.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="message" class="message">
+    <div class="container">
+      <div class="section-head">
+        <div class="label">Messaging system</div>
+        <h2>Use these lines across campaigns, demos, and landing pages.</h2>
+      </div>
+
+      <div class="message-box">
+        <div class="message-grid">
+          <div class="quote">
+            OneChat helps you work with AI.<br />
+            Personal Assistant Agent helps AI work with you.
+          </div>
+
+          <div class="message-list">
+            <div><strong>Hero line:</strong> Your personal AI assistant for the work that happens after the conversation.</div>
+            <div><strong>Short line:</strong> Message it anywhere. Review everything. Move work forward.</div>
+            <div><strong>Feature line:</strong> Give multiple tasks in one message. KaraX breaks them into workstreams and brings back organized outputs.</div>
+            <div><strong>Control line:</strong> The assistant prepares the work. You approve what moves forward.</div>
+            <div><strong>Channel line:</strong> Available through KaraX and Telegram today. WhatsApp and Google Chat support coming soon.</div>
+            <div><strong>Competitive line:</strong> Other AI tools answer. KaraX helps you follow through.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="next" class="cta-final">
+    <div class="container">
+      <div class="label">Team next step</div>
+      <h2>Build the campaign around delegation, not automation.</h2>
+      <p>
+        The next marketing push should focus on the Personal Assistant Agent as a daily work companion:
+        multiple tasks, multiple workstreams, available through chat, always review-first.
+      </p>
+      <div class="cta-row" style="justify-content:center;">
+        <a class="btn primary" href="#compare">Use this for team training</a>
+        <a class="btn secondary" href="#message">Copy messaging lines</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-inner">
+      <div>KaraX.ai internal education page</div>
+      <div>OneChat = Workspace · Personal Assistant Agent = Delegation layer · AI Chat = General answers</div>
+    </div>
+  </footer>
+
+</body>
+</html>
